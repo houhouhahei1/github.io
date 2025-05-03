@@ -297,44 +297,6 @@
             createParticles();
 
             // 自动跳转功能已移除
-
-            // 添加登录按钮功能
-            const addLoginButton = () => {
-                const container = document.querySelector('.content-container');
-                if (container) {
-                    const loginButton = document.createElement('a');
-                    loginButton.href = 'login.html';
-                    loginButton.className = 'login-button';
-                    loginButton.textContent = '登录';
-                    loginButton.style.display = 'inline-block';
-                    loginButton.style.marginTop = '30px';
-                    loginButton.style.padding = '10px 30px';
-                    loginButton.style.backgroundColor = '#4e6ef2';
-                    loginButton.style.color = 'white';
-                    loginButton.style.borderRadius = '30px';
-                    loginButton.style.textDecoration = 'none';
-                    loginButton.style.fontWeight = 'bold';
-                    loginButton.style.boxShadow = '0 4px 15px rgba(78, 110, 242, 0.3)';
-                    loginButton.style.transition = 'all 0.3s ease';
-
-                    loginButton.onmouseover = () => {
-                        loginButton.style.backgroundColor = '#3a5ad9';
-                        loginButton.style.transform = 'translateY(-2px)';
-                        loginButton.style.boxShadow = '0 6px 20px rgba(78, 110, 242, 0.4)';
-                    };
-
-                    loginButton.onmouseout = () => {
-                        loginButton.style.backgroundColor = '#4e6ef2';
-                        loginButton.style.transform = 'translateY(0)';
-                        loginButton.style.boxShadow = '0 4px 15px rgba(78, 110, 242, 0.3)';
-                    };
-
-                    container.appendChild(loginButton);
-                }
-            };
-
-            // 添加登录按钮
-            addLoginButton();
         });
     </script>
 </body>
