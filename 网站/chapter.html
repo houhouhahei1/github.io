@@ -1,0 +1,2357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta content="0" http-equiv="Expires">
+    <meta content="no-cache" http-equiv="Pragma">
+    <meta content="no-cache" http-equiv="Cache-control">
+    <meta content="no-cache" http-equiv="Cache">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover" name="viewport"/>
+    <meta content="AI写作, 写作辅助工具, 星月写作, 智能写作助手, 在线写作工具, 自动生成文章, 创意写作, AI作文助手" name="keywords">
+    <meta content="星月写作为您提供AI智能写作辅助，帮助快速生成文章、获取创意灵感，提升写作效率，是一款功能强大的AI写作助手。" name="description">
+    <link href="images/pen-logo.svg" rel="icon" type="image/svg+xml">
+    <title>星月写作 - 创作中心</title>
+
+    <!-- 立即加载关键资源 -->
+    <link rel="preload" href="images/pen-logo.svg" as="image" fetchpriority="high" crossorigin>
+
+    <!-- 简化版主题脚本 -->
+    <script>
+    (function() {
+        // 立即应用保存的主题
+        var savedTheme = localStorage.getItem('selectedTheme');
+        document.documentElement.setAttribute('data-theme', savedTheme || 'default');
+
+        // 禁用过渡效果，提高性能
+        document.documentElement.classList.add('no-transitions');
+
+        // 页面加载后移除禁用类
+        window.addEventListener('DOMContentLoaded', function() {
+            document.documentElement.classList.remove('no-transitions');
+        });
+    })();
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #ffffff;
+        }
+
+        .no-transitions, .no-transitions * {
+            transition: none !important;
+            animation: none !important;
+        }
+
+        /* 自定义滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+            background-color: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+
+        /* 滚动条在不使用时隐藏 */
+        ::-webkit-scrollbar-thumb {
+            visibility: hidden;
+        }
+
+        *:hover::-webkit-scrollbar-thumb,
+        *:focus::-webkit-scrollbar-thumb,
+        *:active::-webkit-scrollbar-thumb,
+        *:hover > ::-webkit-scrollbar-thumb {
+            visibility: visible;
+        }
+
+        /* 暗黑模式下的滚动条样式 */
+        [data-theme="dark"] ::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        [data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        #app {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            overflow: hidden;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(78, 110, 242, 0.2);
+            pointer-events: none;
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            width: 0;
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            transform: translateX(-80px);
+        }
+
+        .sidebar-expanded {
+            width: 80px;
+            transform: translateX(0);
+        }
+
+        .sidebar-header {
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 20px 0 0 0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 80px);
+        }
+
+        .menu-item {
+            padding: 12px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(78, 110, 242, 0.05);
+        }
+
+        .menu-item.active {
+            background-color: rgba(78, 110, 242, 0.1);
+            border-left: 3px solid #4e6ef2;
+        }
+
+        .menu-icon {
+            font-size: 20px;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .menu-text {
+            font-size: 12px;
+        }
+
+        /* 底部菜单容器样式 */
+        .bottom-menu-container {
+            margin-top: auto;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            padding-top: 10px;
+            width: 100%;
+        }
+
+        .bottom-menu-item {
+            margin-bottom: 5px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .bottom-menu-item:last-child {
+            margin-bottom: 15px;
+        }
+
+        .bottom-menu-item .menu-icon {
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .bottom-menu-item:hover .menu-icon {
+            color: #4e6ef2;
+            transform: scale(1.1);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #4e6ef2;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .user-info {
+            width: 100%;
+            text-align: center;
+        }
+
+        .user-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .user-role {
+            font-size: 10px;
+            color: #666;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            flex: 1;
+            margin-left: 0;
+            padding: 0;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        /* 创作界面样式 */
+        .editor-container {
+            display: flex;
+            height: calc(100vh - 56px);
+            margin-top: 56px; /* 与顶部导航栏高度一致 */
+            margin-left: 0; /* 默认不为侧边栏留空间 */
+            position: relative;
+            top: 0;
+            left: 0;
+        }
+
+        .with-sidebar .editor-container {
+            margin-left: 0;
+        }
+
+        /* 章节列表侧边栏 */
+        .chapter-list-sidebar {
+            width: 267px; /* 增加宽度（原来的200px扩大三分之一） */
+            background-color: rgba(255, 255, 255, 0.95);
+            border-right: 1px solid #e8e8e8;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chapter-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .chapter-list-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        #chapters-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        .chapter-list-footer {
+            padding: 8px 16px;
+            border-bottom: 1px solid #e8e8e8;
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+            justify-content: space-between;
+        }
+
+        .chapter-action-btn {
+            height: 32px;
+            padding: 0 12px;
+            border-radius: 4px;
+            background-color: #f5f5f5;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 13px;
+            flex: 1;
+            box-shadow: none;
+        }
+
+        .chapter-action-btn:hover {
+            background-color: #e8e8e8;
+            color: #1890ff;
+        }
+
+        .chapter-action-btn i {
+            margin-right: 4px;
+            font-size: 12px;
+        }
+
+        .chapter-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #f0f0f0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chapter-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .chapter-item.active {
+            background-color: #f0f7ff;
+            color: #1890ff;
+            font-weight: 500;
+        }
+
+        /* 隐藏章节编号 */
+        .chapter-item-number {
+            display: none;
+        }
+
+        /* 编辑器主体 */
+        .editor-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(255, 255, 255, 0.95);
+            position: relative;
+            border-left: 1px solid #e8e8e8;
+            overflow: hidden;
+        }
+
+        /* 编辑器工具栏 */
+        .editor-toolbar {
+            height: 48px;
+            background-color: #fff;
+            border-bottom: 1px solid #e8e8e8;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            justify-content: space-between;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            margin-left: 10px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .toolbar-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            background-color: #f5f5f5;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-right: 4px;
+            box-shadow: none;
+        }
+
+        .toolbar-btn:hover {
+            background-color: #e8e8e8;
+            color: #1890ff;
+        }
+
+        .toolbar-btn.active {
+            background-color: #e6f7ff;
+            color: #1890ff;
+        }
+
+        .toolbar-separator {
+            width: 1px;
+            height: 24px;
+            background-color: rgba(0, 0, 0, 0.1);
+            margin: 0 10px;
+        }
+
+        /* AI功能按钮 */
+        .ai-btn {
+            height: 32px;
+            padding: 0 12px;
+            border-radius: 4px;
+            background-color: rgba(24, 144, 255, 0.1);
+            color: #1890ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-left: 8px;
+            font-size: 13px;
+            box-shadow: none;
+            border: 1px solid rgba(24, 144, 255, 0.2);
+        }
+
+        .ai-btn:hover {
+            background-color: rgba(24, 144, 255, 0.2);
+            border-color: rgba(24, 144, 255, 0.3);
+        }
+
+        .ai-btn i {
+            margin-right: 4px;
+        }
+
+        /* 为不同的AI按钮设置不同的颜色 */
+        #ai-write {
+            background-color: rgba(24, 144, 255, 0.1);
+            color: #1890ff;
+            border-color: rgba(24, 144, 255, 0.2);
+        }
+
+        #ai-expand {
+            background-color: rgba(19, 194, 194, 0.1);
+            color: #13c2c2;
+            border-color: rgba(19, 194, 194, 0.2);
+        }
+
+        #ai-polish {
+            background-color: rgba(114, 46, 209, 0.1);
+            color: #722ed1;
+            border-color: rgba(114, 46, 209, 0.2);
+        }
+
+        #ai-continue {
+            background-color: rgba(82, 196, 26, 0.1);
+            color: #52c41a;
+            border-color: rgba(82, 196, 26, 0.2);
+        }
+
+        #ai-split {
+            background-color: rgba(250, 140, 22, 0.1);
+            color: #fa8c16;
+            border-color: rgba(250, 140, 22, 0.2);
+        }
+
+        #ai-name {
+            background-color: rgba(235, 47, 150, 0.1);
+            color: #eb2f96;
+            border-color: rgba(235, 47, 150, 0.2);
+        }
+
+        /* 悬停效果 */
+        #ai-write:hover {
+            background-color: rgba(24, 144, 255, 0.2);
+            border-color: rgba(24, 144, 255, 0.3);
+        }
+
+        #ai-expand:hover {
+            background-color: rgba(19, 194, 194, 0.2);
+            border-color: rgba(19, 194, 194, 0.3);
+        }
+
+        #ai-polish:hover {
+            background-color: rgba(114, 46, 209, 0.2);
+            border-color: rgba(114, 46, 209, 0.3);
+        }
+
+        #ai-continue:hover {
+            background-color: rgba(82, 196, 26, 0.2);
+            border-color: rgba(82, 196, 26, 0.3);
+        }
+
+        #ai-split:hover {
+            background-color: rgba(250, 140, 22, 0.2);
+            border-color: rgba(250, 140, 22, 0.3);
+        }
+
+        #ai-name:hover {
+            background-color: rgba(235, 47, 150, 0.2);
+            border-color: rgba(235, 47, 150, 0.3);
+        }
+
+        /* 顶部AI功能按钮 */
+        .top-ai-btn {
+            height: 32px;
+            padding: 0 12px;
+            border-radius: 4px;
+            background-color: rgba(24, 144, 255, 0.1);
+            color: #1890ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-left: 8px;
+            font-size: 13px;
+            box-shadow: none;
+            position: relative;
+            border: 1px solid rgba(24, 144, 255, 0.2);
+        }
+
+        .top-ai-btn:hover {
+            background-color: rgba(24, 144, 255, 0.2);
+            border-color: rgba(24, 144, 255, 0.3);
+        }
+
+        .top-ai-btn i {
+            margin-right: 4px;
+        }
+
+        /* 为不同的AI按钮设置不同的颜色 */
+        #top-ai-write {
+            background-color: rgba(24, 144, 255, 0.1);
+            color: #1890ff;
+            border-color: rgba(24, 144, 255, 0.2);
+        }
+
+        #top-ai-expand {
+            background-color: rgba(19, 194, 194, 0.1);
+            color: #13c2c2;
+            border-color: rgba(19, 194, 194, 0.2);
+        }
+
+        #top-ai-polish {
+            background-color: rgba(114, 46, 209, 0.1);
+            color: #722ed1;
+            border-color: rgba(114, 46, 209, 0.2);
+        }
+
+        #top-ai-continue {
+            background-color: rgba(82, 196, 26, 0.1);
+            color: #52c41a;
+            border-color: rgba(82, 196, 26, 0.2);
+        }
+
+        /* 悬停效果 */
+        #top-ai-write:hover {
+            background-color: rgba(24, 144, 255, 0.2);
+            border-color: rgba(24, 144, 255, 0.3);
+        }
+
+        #top-ai-expand:hover {
+            background-color: rgba(19, 194, 194, 0.2);
+            border-color: rgba(19, 194, 194, 0.3);
+        }
+
+        #top-ai-polish:hover {
+            background-color: rgba(114, 46, 209, 0.2);
+            border-color: rgba(114, 46, 209, 0.3);
+        }
+
+        #top-ai-continue:hover {
+            background-color: rgba(82, 196, 26, 0.2);
+            border-color: rgba(82, 196, 26, 0.3);
+        }
+
+        /* 编辑区域 */
+        .editor-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #fff;
+            margin: 0;
+        }
+
+        .chapter-title-input {
+            width: 100%;
+            padding: 8px 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            border: none;
+            border-bottom: 1px solid #e8e8e8;
+            margin-bottom: 24px;
+            background-color: transparent;
+            outline: none;
+        }
+
+        .chapter-title-input:focus {
+            border-bottom-color: #1890ff;
+        }
+
+        .editor-textarea {
+            flex: 1;
+            width: 100%;
+            padding: 8px 0;
+            font-size: 16px;
+            line-height: 1.8;
+            color: #333;
+            border: none;
+            resize: none;
+            background-color: transparent;
+            outline: none;
+        }
+
+        /* 章节页码指示器 */
+        .chapter-page-indicator {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            color: #999;
+            display: flex;
+            align-items: center;
+        }
+
+        /* 章节导航 */
+        .chapter-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .nav-button {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-button i {
+            margin-right: 10px;
+        }
+
+        .nav-button.next i {
+            margin-right: 0;
+            margin-left: 10px;
+        }
+
+        /* 主题切换按钮 */
+        .theme-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        .theme-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-btn:hover {
+            transform: rotate(30deg);
+        }
+
+        /* 顶部导航栏 */
+        .top-navbar {
+            height: 56px;
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 9;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .with-sidebar .top-navbar {
+            left: 80px;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .back-button {
+            height: 32px;
+            padding: 0 16px;
+            border-radius: 4px;
+            background-color: #4e6ef2;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-right: 12px;
+            font-size: 14px;
+            box-shadow: none;
+        }
+
+        .back-button:hover {
+            background-color: #3a5ae0;
+        }
+
+        .back-button i {
+            margin-right: 6px;
+        }
+
+        .page-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+            margin-right: 12px;
+        }
+
+        .navbar-time {
+            font-size: 13px;
+            color: #999;
+            margin-left: 0;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-action {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-left: 8px;
+            color: #666;
+        }
+
+        .nav-action:hover {
+            background-color: #f5f5f5;
+            color: #1890ff;
+        }
+
+        .import-book-btn {
+            height: 32px;
+            padding: 0 16px;
+            border-radius: 4px;
+            background-color: #f5f5f5;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-right: 12px;
+            font-size: 14px;
+            box-shadow: none;
+            border: 1px solid #e8e8e8;
+        }
+
+        .import-book-btn:hover {
+            background-color: #e8e8e8;
+            color: #1890ff;
+        }
+
+        .import-book-btn i {
+            margin-right: 6px;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 60px;
+            }
+
+            .top-navbar {
+                left: 60px;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .chapter-container {
+                padding: 20px;
+            }
+
+            .chapter-title {
+                font-size: 20px;
+            }
+
+            .chapter-content {
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .sidebar {
+                width: 0;
+                transform: translateX(-60px);
+            }
+
+            .sidebar-expanded {
+                width: 60px;
+                transform: translateX(0);
+            }
+
+            .top-navbar {
+                left: 0;
+            }
+
+            .with-sidebar .top-navbar {
+                left: 60px;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 0;
+            }
+
+            .chapter-container {
+                padding: 15px;
+            }
+
+            .chapter-navigation {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .nav-button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* 暗黑模式样式 */
+        [data-theme="dark"] {
+            --text-color: #e0e0e0;
+            --bg-gradient: linear-gradient(135deg, #2c3e50 0%, #1a1a2e 100%);
+            --card-bg: rgba(30, 30, 40, 0.8);
+            --sidebar-bg: rgba(25, 25, 35, 0.9);
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="dark"] body {
+            background-color: #1a1a2e;
+        }
+
+        [data-theme="dark"] #app {
+            background: linear-gradient(135deg, #2c3e50 0%, #1a1a2e 100%);
+        }
+
+        [data-theme="dark"] .sidebar {
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+        }
+
+        [data-theme="dark"] .sidebar-header {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        [data-theme="dark"] .menu-item {
+            color: var(--text-color);
+        }
+
+        [data-theme="dark"] .menu-item:hover {
+            background-color: rgba(78, 110, 242, 0.15);
+        }
+
+        [data-theme="dark"] .menu-item.active {
+            background-color: rgba(78, 110, 242, 0.2);
+        }
+
+        [data-theme="dark"] .bottom-menu-container {
+            border-top: 1px solid var(--border-color);
+        }
+
+        [data-theme="dark"] .bottom-menu-item .menu-icon {
+            color: #aaa;
+        }
+
+        [data-theme="dark"] .user-name {
+            color: var(--text-color);
+        }
+
+        [data-theme="dark"] .user-role {
+            color: #aaa;
+        }
+
+        [data-theme="dark"] .top-navbar {
+            background-color: var(--card-bg);
+            box-shadow: none;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        [data-theme="dark"] .back-button {
+            background-color: #4e6ef2;
+            color: white;
+        }
+
+        [data-theme="dark"] .back-button:hover {
+            background-color: #3a5ae0;
+        }
+
+        [data-theme="dark"] .page-title {
+            color: var(--text-color);
+        }
+
+        [data-theme="dark"] .navbar-time {
+            color: #aaa;
+        }
+
+        [data-theme="dark"] .chapter-container {
+            background-color: var(--card-bg);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        [data-theme="dark"] .chapter-header {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        [data-theme="dark"] .chapter-title {
+            color: var(--text-color);
+        }
+
+        [data-theme="dark"] .chapter-meta {
+            color: #aaa;
+        }
+
+        [data-theme="dark"] .chapter-content {
+            color: var(--text-color);
+        }
+
+        [data-theme="dark"] .nav-button {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        [data-theme="dark"] .theme-btn {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        /* 暗黑模式下的创作界面样式 */
+        [data-theme="dark"] .chapter-list-sidebar {
+            background-color: var(--card-bg);
+            border-right: 1px solid var(--border-color);
+        }
+
+        [data-theme="dark"] .chapter-list-header {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        [data-theme="dark"] .chapter-list-footer {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        [data-theme="dark"] .chapter-action-btn {
+            background-color: rgba(30, 35, 50, 0.95);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        [data-theme="dark"] .chapter-action-btn:hover {
+            background-color: rgba(40, 50, 70, 0.95);
+            color: #1890ff;
+        }
+
+        [data-theme="dark"] .chapter-list-title {
+            color: var(--text-color);
+        }
+
+        [data-theme="dark"] .chapter-item {
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        [data-theme="dark"] .chapter-item:hover {
+            background-color: rgba(40, 50, 70, 0.5);
+        }
+
+        [data-theme="dark"] .chapter-item.active {
+            background-color: rgba(24, 144, 255, 0.1);
+            color: #1890ff;
+        }
+
+        [data-theme="dark"] .chapter-item-number {
+            color: #aaa;
+        }
+
+        [data-theme="dark"] .editor-main {
+            background-color: var(--card-bg);
+            border-left: 1px solid var(--border-color);
+        }
+
+        [data-theme="dark"] .editor-toolbar {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        [data-theme="dark"] .toolbar-btn {
+            background-color: rgba(30, 35, 50, 0.95);
+            color: #aaa;
+            border: 1px solid var(--border-color);
+        }
+
+        [data-theme="dark"] .toolbar-btn:hover {
+            background-color: rgba(40, 50, 70, 0.95);
+            color: #1890ff;
+        }
+
+        [data-theme="dark"] .toolbar-btn.active {
+            background-color: rgba(24, 144, 255, 0.1);
+            color: #1890ff;
+        }
+
+        [data-theme="dark"] .toolbar-separator {
+            background-color: var(--border-color);
+        }
+
+        [data-theme="dark"] .chapter-title-input {
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        [data-theme="dark"] .chapter-title-input:focus {
+            border-bottom-color: #1890ff;
+        }
+
+        [data-theme="dark"] .editor-textarea {
+            color: var(--text-color);
+        }
+
+        [data-theme="dark"] .editor-content {
+            background-color: var(--card-bg);
+        }
+
+        [data-theme="dark"] .chapter-page-indicator {
+            background-color: var(--card-bg);
+            color: #aaa;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 暗黑模式下的导入书籍按钮 */
+        [data-theme="dark"] .import-book-btn {
+            background-color: var(--card-bg);
+            color: #aaa;
+            border: 1px solid var(--border-color);
+        }
+
+        [data-theme="dark"] .import-book-btn:hover {
+            background-color: rgba(40, 50, 70, 0.95);
+            color: #1890ff;
+            border-color: #1890ff;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="particles" id="particles"></div>
+
+        <!-- 侧边栏 -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="user-avatar">U</div>
+                <div class="user-info">
+                    <div class="user-name"></div>
+                    <div class="user-role"></div>
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <!-- 顶部菜单项 -->
+                <a href="dashboard.html" class="menu-item">
+                    <span class="menu-icon">🏠</span>
+                    <span class="menu-text">首页</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <span class="menu-icon">💬</span>
+                    <span class="menu-text">对话</span>
+                </a>
+                <a href="#" class="menu-item active">
+                    <span class="menu-icon">✏️</span>
+                    <span class="menu-text">创作</span>
+                </a>
+
+                <!-- 底部菜单项容器 -->
+                <div class="bottom-menu-container">
+                    <a href="#" class="menu-item bottom-menu-item">
+                        <span class="menu-icon">📚</span>
+                        <span class="menu-text">教程</span>
+                    </a>
+                    <a href="#" class="menu-item bottom-menu-item">
+                        <span class="menu-icon">👥</span>
+                        <span class="menu-text">邀请</span>
+                    </a>
+                    <a href="#" class="menu-item bottom-menu-item">
+                        <span class="menu-icon">⚙️</span>
+                        <span class="menu-text">设置</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 顶部导航栏 -->
+        <div class="top-navbar">
+            <div class="navbar-left">
+                <div class="back-button" id="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>返回书架</span>
+                </div>
+                <div class="navbar-time" id="current-time">最后保存：2024-04-29 04:35:59</div>
+            </div>
+            <div class="navbar-right">
+                <div class="import-book-btn" id="import-book-btn">
+                    <i class="fas fa-file-import"></i>
+                    <span>导入书籍</span>
+                </div>
+                <div class="import-book-btn" id="new-chapter-btn-nav">
+                    <i class="fas fa-plus"></i>
+                    <span>新建书籍</span>
+                </div>
+                <input type="file" id="book-file-input" accept=".txt" style="display: none;">
+
+                <div class="import-book-btn" id="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                    <span>显示导航</span>
+                </div>
+                <div class="import-book-btn" id="night-mode-toggle">
+                    <i class="fas fa-moon"></i>
+                    <span>切换主题</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <div class="editor-container">
+                <!-- 章节列表侧边栏 -->
+                <div class="chapter-list-sidebar">
+                    <div class="chapter-list-header">
+                        <div class="chapter-list-title">章节列表</div>
+                    </div>
+                    <div class="chapter-list-footer">
+                        <div class="chapter-action-btn" id="new-chapter-btn">
+                            <i class="fas fa-plus"></i>
+                            <span>新建章节</span>
+                        </div>
+                        <div class="chapter-action-btn" id="sort-chapters-btn">
+                            <i class="fas fa-sort"></i>
+                            <span>切换排序</span>
+                        </div>
+                    </div>
+                    <div id="chapters-container">
+                        <div class="chapter-item active">
+                            <span class="chapter-item-number">1</span>
+                            <span>第 1 章</span>
+                        </div>
+                        <div class="chapter-item">
+                            <span class="chapter-item-number">2</span>
+                            <span>第 2 章</span>
+                        </div>
+                        <div class="chapter-item">
+                            <span class="chapter-item-number">3</span>
+                            <span>第 3 章</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 编辑器主体 -->
+                <div class="editor-main">
+                    <!-- 编辑器工具栏 -->
+                    <div class="editor-toolbar">
+                        <div class="toolbar-left">
+                            <div class="toolbar-btn" title="新建章节">
+                                <i class="fas fa-file"></i>
+                            </div>
+                            <div class="toolbar-btn" title="保存">
+                                <i class="fas fa-save"></i>
+                            </div>
+                            <div class="toolbar-separator"></div>
+                            <div class="toolbar-btn" title="撤销">
+                                <i class="fas fa-undo"></i>
+                            </div>
+                            <div class="toolbar-btn" title="重做">
+                                <i class="fas fa-redo"></i>
+                            </div>
+                            <div class="toolbar-separator"></div>
+                            <div class="toolbar-btn" title="查找">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="toolbar-btn" title="替换">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                            <div class="toolbar-separator"></div>
+                            <div class="toolbar-btn" title="加粗">
+                                <i class="fas fa-bold"></i>
+                            </div>
+                            <div class="toolbar-btn" title="斜体">
+                                <i class="fas fa-italic"></i>
+                            </div>
+                            <div class="toolbar-btn" title="下划线">
+                                <i class="fas fa-underline"></i>
+                            </div>
+                        </div>
+                        <div class="toolbar-right">
+                            <div class="ai-btn" id="ai-write">
+                                <i class="fas fa-robot"></i>
+                                <span>AI写作</span>
+                            </div>
+                            <div class="ai-btn" id="ai-expand">
+                                <i class="fas fa-magic"></i>
+                                <span>AI扩写</span>
+                            </div>
+                            <div class="ai-btn" id="ai-polish">
+                                <i class="fas fa-magic"></i>
+                                <span>AI润色</span>
+                            </div>
+                            <div class="ai-btn" id="ai-continue">
+                                <i class="fas fa-check"></i>
+                                <span>AI续写</span>
+                            </div>
+                            <div class="ai-btn" id="ai-split">
+                                <i class="fas fa-cut"></i>
+                                <span>AI拆书</span>
+                            </div>
+                            <div class="ai-btn" id="ai-name">
+                                <i class="fas fa-signature"></i>
+                                <span>AI起名</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 编辑区域 -->
+                    <div class="editor-content">
+                        <input type="text" class="chapter-title-input" placeholder="请输入章节标题" value="第 1 章">
+                        <textarea class="editor-textarea" placeholder="请输入章节内容"></textarea>
+                    </div>
+
+                    <!-- 章节页码指示器 -->
+                    <div class="chapter-page-indicator">
+                        <span>5 / 35</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主题切换按钮已移至顶部导航栏 -->
+    </div>
+
+    <!-- 引入 Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <script>
+        // 创建粒子背景
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = window.innerWidth < 768 ? 30 : 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+
+                // 随机大小
+                const size = Math.random() * 10 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+
+                // 随机位置
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                particle.style.left = `${left}%`;
+                particle.style.top = `${top}%`;
+
+                // 随机透明度
+                const opacity = Math.random() * 0.5 + 0.1;
+                particle.style.opacity = opacity;
+
+                // 添加动画
+                particle.style.animation = `float ${Math.random() * 10 + 10}s infinite ease-in-out`;
+
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // 侧边栏切换
+        function initSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const menuItems = document.querySelectorAll('.menu-item');
+            const app = document.getElementById('app');
+            const mainContent = document.querySelector('.main-content');
+            const editorContainer = document.querySelector('.editor-container');
+
+            // 默认侧边栏是隐藏的
+            sidebar.classList.remove('sidebar-expanded');
+            app.classList.remove('with-sidebar');
+
+            // 从本地存储中获取侧边栏状态
+            const sidebarVisible = localStorage.getItem('sidebarVisible') === 'true';
+            if (sidebarVisible) {
+                sidebar.classList.add('sidebar-expanded');
+                app.classList.add('with-sidebar');
+                mainContent.style.marginLeft = '80px';
+
+                // 更新按钮文本
+                const sidebarToggleText = sidebarToggle.querySelector('span');
+                if (sidebarToggleText) {
+                    sidebarToggleText.textContent = '隐藏导航';
+                }
+            }
+
+            // 侧边栏切换
+            sidebarToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('sidebar-expanded');
+                app.classList.toggle('with-sidebar');
+
+                // 切换左侧导航栏的显示/隐藏
+                const isExpanded = sidebar.classList.contains('sidebar-expanded');
+                if (isExpanded) {
+                    mainContent.style.marginLeft = '80px';
+
+                    // 更新按钮文本
+                    const sidebarToggleText = sidebarToggle.querySelector('span');
+                    if (sidebarToggleText) {
+                        sidebarToggleText.textContent = '隐藏导航';
+                    }
+                } else {
+                    mainContent.style.marginLeft = '0';
+
+                    // 更新按钮文本
+                    const sidebarToggleText = sidebarToggle.querySelector('span');
+                    if (sidebarToggleText) {
+                        sidebarToggleText.textContent = '显示导航';
+                    }
+                }
+
+                // 保存侧边栏状态到本地存储
+                localStorage.setItem('sidebarVisible', isExpanded);
+            });
+
+            // 菜单项点击事件
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    menuItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // 点击页面其他区域关闭侧边栏
+            document.addEventListener('click', function(e) {
+                if (!sidebar.contains(e.target) && e.target !== sidebarToggle && !sidebarToggle.contains(e.target)) {
+                    sidebar.classList.remove('sidebar-expanded');
+                    app.classList.remove('with-sidebar');
+                }
+            });
+        }
+
+        // 主题切换
+        function initThemeSwitcher() {
+            const themeBtn = document.getElementById('theme-btn');
+            const nightModeToggle = document.getElementById('night-mode-toggle');
+
+            // 主题按钮点击事件
+            if (themeBtn) {
+                themeBtn.addEventListener('click', function() {
+                    toggleTheme();
+                });
+            }
+
+            // 夜间模式按钮点击事件
+            if (nightModeToggle) {
+                nightModeToggle.addEventListener('click', function() {
+                    toggleTheme();
+                });
+            }
+
+            // 初始化主题图标
+            updateThemeIcon(document.documentElement.getAttribute('data-theme'));
+        }
+
+        // 切换主题
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            let newTheme;
+
+            // 简单的主题循环切换
+            switch(currentTheme) {
+                case 'default':
+                    newTheme = 'dark';
+                    break;
+                case 'dark':
+                    newTheme = 'default';
+                    break;
+                default:
+                    newTheme = 'default';
+            }
+
+            // 应用新主题
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('selectedTheme', newTheme);
+
+            // 更新主题图标
+            updateThemeIcon(newTheme);
+
+            // 更新按钮文本
+            const nightModeToggle = document.getElementById('night-mode-toggle');
+            if (nightModeToggle) {
+                const nightModeToggleText = nightModeToggle.querySelector('span');
+                if (nightModeToggleText) {
+                    nightModeToggleText.textContent = newTheme === 'dark' ? '浅色主题' : '深色主题';
+                }
+            }
+        }
+
+        // 更新主题图标
+        function updateThemeIcon(theme) {
+            const themeBtn = document.getElementById('theme-btn');
+            const nightModeToggle = document.getElementById('night-mode-toggle');
+
+            if (theme === 'dark') {
+                if (themeBtn) themeBtn.textContent = '🌞';
+                if (nightModeToggle) {
+                    const icon = nightModeToggle.querySelector('i');
+                    if (icon) icon.className = 'fas fa-sun';
+
+                    // 更新按钮文本
+                    const nightModeToggleText = nightModeToggle.querySelector('span');
+                    if (nightModeToggleText) {
+                        nightModeToggleText.textContent = '浅色主题';
+                    }
+                }
+            } else {
+                if (themeBtn) themeBtn.textContent = '🌓';
+                if (nightModeToggle) {
+                    const icon = nightModeToggle.querySelector('i');
+                    if (icon) icon.className = 'fas fa-moon';
+
+                    // 更新按钮文本
+                    const nightModeToggleText = nightModeToggle.querySelector('span');
+                    if (nightModeToggleText) {
+                        nightModeToggleText.textContent = '深色主题';
+                    }
+                }
+            }
+        }
+
+        // 返回按钮功能
+        function initBackButton() {
+            const backButton = document.getElementById('back-button');
+            if (backButton) {
+                backButton.addEventListener('click', function() {
+                    // 保存当前书籍
+                    saveCurrentBook();
+
+                    // 返回书架页面
+                    window.location.href = 'bookshelf.html';
+                });
+            }
+        }
+
+        // 检查登录状态
+        function checkLoginStatus() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+
+            if (!isLoggedIn) {
+                // 在测试环境中，不强制跳转
+                console.log('用户未登录，但在测试环境中不强制跳转');
+
+                // 设置默认用户头像和名称
+                const userAvatar = document.querySelector('.user-avatar');
+                const userName = document.querySelector('.user-name');
+
+                if (userAvatar) {
+                    userAvatar.textContent = 'U';
+                }
+
+                if (userName) {
+                    userName.textContent = '访客';
+                }
+            } else {
+                // 更新用户信息
+                const username = localStorage.getItem('username') || '用户';
+                const userAvatar = document.querySelector('.user-avatar');
+                const userName = document.querySelector('.user-name');
+
+                if (userAvatar) {
+                    userAvatar.textContent = username.charAt(0).toUpperCase();
+                }
+
+                if (userName) {
+                    userName.textContent = username;
+                }
+            }
+        }
+
+        // 加载当前书籍数据
+        function loadCurrentBook() {
+            // 从sessionStorage获取当前书籍ID
+            const currentBookId = sessionStorage.getItem('currentBookId');
+
+            // 如果没有当前书籍ID，则创建一个新书籍
+            if (!currentBookId) {
+                // 创建新书籍
+                const newBook = {
+                    id: 'book_' + Date.now(),
+                    title: '新书籍',
+                    lastEdited: new Date().toLocaleDateString(),
+                    coverEmoji: '📖',
+                    chapters: [{
+                        id: 'chapter_' + Date.now() + '_1',
+                        title: '第1章',
+                        content: ''
+                    }]
+                };
+
+                // 保存到localStorage
+                const books = JSON.parse(localStorage.getItem('books') || '[]');
+                books.push(newBook);
+                localStorage.setItem('books', JSON.stringify(books));
+
+                // 设置当前书籍ID
+                sessionStorage.setItem('currentBookId', newBook.id);
+
+                // 加载章节
+                loadBookChapters(newBook);
+            } else {
+                // 从localStorage获取书籍数据
+                const books = JSON.parse(localStorage.getItem('books') || '[]');
+                const currentBook = books.find(book => book.id === currentBookId);
+
+                if (currentBook) {
+                    // 加载章节
+                    loadBookChapters(currentBook);
+                } else {
+                    // 如果找不到当前书籍，则创建一个新书籍
+                    sessionStorage.removeItem('currentBookId');
+                    loadCurrentBook();
+                }
+            }
+        }
+
+        // 加载书籍章节
+        function loadBookChapters(book) {
+            // 清空现有章节
+            const chaptersContainer = document.getElementById('chapters-container');
+            chaptersContainer.innerHTML = '';
+
+            // 加载章节
+            if (book.chapters && book.chapters.length > 0) {
+                book.chapters.forEach((chapter, index) => {
+                    createChapter(index + 1, chapter.title, chapter.content);
+                });
+
+                // 自动选中第一个章节
+                const firstChapter = document.querySelector('.chapter-item');
+                if (firstChapter) {
+                    firstChapter.click();
+                }
+            } else {
+                // 如果没有章节，则创建一个新章节
+                createChapter(1, '第1章', '');
+            }
+        }
+
+        // 保存当前书籍
+        function saveCurrentBook() {
+            // 从sessionStorage获取当前书籍ID
+            const currentBookId = sessionStorage.getItem('currentBookId');
+            if (!currentBookId) return;
+
+            // 从localStorage获取书籍数据
+            const books = JSON.parse(localStorage.getItem('books') || '[]');
+            const currentBookIndex = books.findIndex(book => book.id === currentBookId);
+
+            if (currentBookIndex !== -1) {
+                // 获取所有章节
+                const chapterItems = document.querySelectorAll('.chapter-item');
+                const chapters = [];
+
+                chapterItems.forEach((item, index) => {
+                    const chapterTitle = item.querySelector('span:last-child').textContent;
+                    const chapterContent = item.dataset.content || '';
+
+                    chapters.push({
+                        id: 'chapter_' + Date.now() + '_' + (index + 1),
+                        title: chapterTitle,
+                        content: chapterContent
+                    });
+                });
+
+                // 更新书籍数据
+                books[currentBookIndex].chapters = chapters;
+                books[currentBookIndex].lastEdited = new Date().toLocaleDateString();
+
+                // 保存到localStorage
+                localStorage.setItem('books', JSON.stringify(books));
+            }
+        }
+
+        // 初始化编辑器功能
+        function initEditor() {
+            // 加载当前书籍数据
+            loadCurrentBook();
+
+            // 章节列表点击事件
+            initChapterItemsEvents();
+
+            // 导入本地书籍按钮
+            const importBookBtn = document.getElementById('import-book-btn');
+            const bookFileInput = document.getElementById('book-file-input');
+            const newBookBtn = document.getElementById('new-chapter-btn-nav');
+
+            // 新建章节按钮点击事件
+            if (newBookBtn) {
+                newBookBtn.addEventListener('click', function() {
+                    createNewChapter();
+                });
+            }
+
+            if (importBookBtn && bookFileInput) {
+                importBookBtn.addEventListener('click', function() {
+                    bookFileInput.click();
+                });
+
+                bookFileInput.addEventListener('change', function(e) {
+                    if (e.target.files.length > 0) {
+                        const file = e.target.files[0];
+                        const reader = new FileReader();
+
+                        // 显示加载提示
+                        showLoadingMessage('正在导入书籍，请稍候...');
+
+                        reader.onload = function(event) {
+                            const content = event.target.result;
+
+                            // 创建新书籍
+                            const newBook = {
+                                id: 'book_' + Date.now(),
+                                title: file.name.replace('.txt', ''),
+                                content: content,
+                                lastEdited: new Date().toLocaleDateString(),
+                                coverEmoji: '📄',
+                                chapters: []
+                            };
+
+                            // 处理书籍内容，分章节
+                            processBookContent(content, newBook);
+
+                            // 保存到localStorage
+                            const books = JSON.parse(localStorage.getItem('books') || '[]');
+                            books.push(newBook);
+                            localStorage.setItem('books', JSON.stringify(books));
+
+                            // 将当前书籍ID存储到sessionStorage
+                            sessionStorage.setItem('currentBookId', newBook.id);
+
+                            // 隐藏加载提示
+                            hideLoadingMessage();
+
+                            // 显示成功提示
+                            showSuccessMessage(`成功导入《${file.name}》，共 ${newBook.chapters.length} 章`);
+
+                            // 刷新页面以加载新书籍
+                            window.location.reload();
+                        };
+
+                        reader.onerror = function() {
+                            // 隐藏加载提示
+                            hideLoadingMessage();
+
+                            // 显示错误提示
+                            showErrorMessage('导入失败，请检查文件格式');
+                        };
+
+                        reader.readAsText(file);
+                    }
+                });
+            }
+
+            // 新建章节按钮 - 章节列表中的按钮
+            const newChapterBtn = document.getElementById('new-chapter-btn');
+            if (newChapterBtn) {
+                newChapterBtn.addEventListener('click', function() {
+                    createNewChapter();
+                });
+            }
+
+            // 这部分已经在上面处理过，不需要重复
+
+            // 切换排序按钮
+            const sortChaptersBtn = document.getElementById('sort-chapters-btn');
+            if (sortChaptersBtn) {
+                sortChaptersBtn.addEventListener('click', function() {
+                    toggleChapterSort();
+                });
+            }
+
+            // 创建新章节
+            function createNewChapter() {
+                const chaptersContainer = document.getElementById('chapters-container');
+                const chapterItems = chaptersContainer.querySelectorAll('.chapter-item');
+                const newChapterNumber = chapterItems.length + 1;
+
+                // 创建新章节元素
+                const newChapter = document.createElement('div');
+                newChapter.className = 'chapter-item';
+                newChapter.innerHTML = `
+                    <span class="chapter-item-number">${newChapterNumber}</span>
+                    <span>第 ${newChapterNumber} 章</span>
+                `;
+
+                // 添加点击事件
+                newChapter.addEventListener('click', function() {
+                    const allChapters = document.querySelectorAll('.chapter-item');
+                    allChapters.forEach(ch => ch.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // 更新编辑器
+                    document.querySelector('.chapter-title-input').value = `第 ${newChapterNumber} 章`;
+                    document.querySelector('.editor-textarea').value = '';
+
+                    // 更新页码指示器
+                    const totalChapters = document.querySelectorAll('.chapter-item').length;
+                    document.querySelector('.chapter-page-indicator span').textContent = `${newChapterNumber} / ${totalChapters}`;
+                });
+
+                // 添加到容器
+                chaptersContainer.appendChild(newChapter);
+
+                // 自动点击新章节
+                newChapter.click();
+
+                // 显示成功提示
+                showToast('已创建新章节', 'success');
+            }
+
+            // 切换章节排序
+            function toggleChapterSort() {
+                const chaptersContainer = document.getElementById('chapters-container');
+                const chapterItems = Array.from(chaptersContainer.querySelectorAll('.chapter-item'));
+
+                // 检查当前排序方式
+                const isAscending = chaptersContainer.getAttribute('data-sort') !== 'desc';
+
+                // 根据章节编号排序
+                chapterItems.sort((a, b) => {
+                    const aNum = parseInt(a.querySelector('.chapter-item-number').textContent);
+                    const bNum = parseInt(b.querySelector('.chapter-item-number').textContent);
+
+                    return isAscending ? bNum - aNum : aNum - bNum;
+                });
+
+                // 清空容器
+                chaptersContainer.innerHTML = '';
+
+                // 重新添加排序后的章节
+                chapterItems.forEach(item => {
+                    chaptersContainer.appendChild(item);
+                });
+
+                // 更新排序标记
+                chaptersContainer.setAttribute('data-sort', isAscending ? 'desc' : 'asc');
+
+                // 显示提示
+                showToast(`已切换为${isAscending ? '降序' : '升序'}排列`, 'info');
+            }
+
+
+
+            // 显示加载提示
+            function showLoadingMessage(message) {
+                let loadingDiv = document.getElementById('loading-message');
+                if (!loadingDiv) {
+                    loadingDiv = document.createElement('div');
+                    loadingDiv.id = 'loading-message';
+                    loadingDiv.style.position = 'fixed';
+                    loadingDiv.style.top = '50%';
+                    loadingDiv.style.left = '50%';
+                    loadingDiv.style.transform = 'translate(-50%, -50%)';
+                    loadingDiv.style.padding = '15px 30px';
+                    loadingDiv.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+                    loadingDiv.style.color = 'white';
+                    loadingDiv.style.borderRadius = '5px';
+                    loadingDiv.style.zIndex = '1000';
+                    document.body.appendChild(loadingDiv);
+                }
+                loadingDiv.textContent = message;
+                loadingDiv.style.display = 'block';
+            }
+
+            // 隐藏加载提示
+            function hideLoadingMessage() {
+                const loadingDiv = document.getElementById('loading-message');
+                if (loadingDiv) {
+                    loadingDiv.style.display = 'none';
+                }
+            }
+
+            // 显示成功提示
+            function showSuccessMessage(message) {
+                showToast(message, 'success');
+            }
+
+            // 显示错误提示
+            function showErrorMessage(message) {
+                showToast(message, 'error');
+            }
+
+            // 显示提示信息
+            function showToast(message, type) {
+                let toastDiv = document.createElement('div');
+                toastDiv.style.position = 'fixed';
+                toastDiv.style.bottom = '20px';
+                toastDiv.style.left = '50%';
+                toastDiv.style.transform = 'translateX(-50%)';
+                toastDiv.style.padding = '10px 20px';
+                toastDiv.style.borderRadius = '5px';
+                toastDiv.style.zIndex = '1000';
+                toastDiv.style.transition = 'all 0.3s ease';
+
+                if (type === 'success') {
+                    toastDiv.style.backgroundColor = 'rgba(46, 204, 113, 0.9)';
+                } else if (type === 'error') {
+                    toastDiv.style.backgroundColor = 'rgba(231, 76, 60, 0.9)';
+                } else {
+                    toastDiv.style.backgroundColor = 'rgba(52, 152, 219, 0.9)';
+                }
+
+                toastDiv.style.color = 'white';
+                toastDiv.textContent = message;
+
+                document.body.appendChild(toastDiv);
+
+                setTimeout(function() {
+                    toastDiv.style.opacity = '0';
+                    setTimeout(function() {
+                        document.body.removeChild(toastDiv);
+                    }, 300);
+                }, 3000);
+            }
+            }
+
+            // 处理导入的书籍内容
+            function processBookContent(content, book) {
+                // 清空现有章节
+                const chaptersContainer = document.getElementById('chapters-container');
+                chaptersContainer.innerHTML = '';
+
+                // 尝试根据章节标题拆分内容
+                // 匹配常见的章节标题格式，如"第一章"、"第1章"、"Chapter 1"等
+                const chapterRegex = /(?:^[ \t]*第[一二三四五六七八九十百千万0-9]+[章节卷篇]|^[ \t]*Chapter\s+\d+|^[ \t]*第\s*\d+\s*[章节卷篇]|^[ \t]*[一二三四五六七八九十百千万0-9]+[、，,\.．][^，,\.．\n]{0,30}$|^[ \t]*\d+[、，,\.．][^，,\.．\n]{0,30}$|^[ \t]*卷[一二三四五六七八九十百千万0-9]+|^[ \t]*Volume\s+\d+|^[ \t]*Part\s+\d+|^[ \t]*Book\s+\d+)/gim;
+
+                // 查找所有章节标题
+                let chapterTitles = [];
+                let match;
+                let tempContent = content;
+
+                // 将内容按行分割
+                const lines = content.split('\n');
+                let currentPosition = 0;
+
+                // 遍历每一行，查找章节标题
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (line && chapterRegex.test(line)) {
+                        // 重置正则表达式的lastIndex
+                        chapterRegex.lastIndex = 0;
+
+                        // 计算当前行在原文中的位置
+                        const position = content.indexOf(lines[i], currentPosition);
+                        currentPosition = position + lines[i].length;
+
+                        chapterTitles.push({
+                            title: line,
+                            position: position
+                        });
+                    }
+                }
+
+                // 如果找到的章节太少（少于3个），尝试使用更宽松的规则
+                if (chapterTitles.length < 3) {
+                    // 清空已找到的章节
+                    chapterTitles = [];
+                    currentPosition = 0;
+
+                    // 使用更宽松的规则
+                    for (let i = 0; i < lines.length; i++) {
+                        const line = lines[i].trim();
+                        if (line && line.length < 50 && (
+                            line.includes('章') ||
+                            line.includes('节') ||
+                            line.includes('卷') ||
+                            line.includes('篇') ||
+                            line.includes('Chapter') ||
+                            line.includes('Part') ||
+                            line.includes('Volume') ||
+                            /^第.{1,10}$/.test(line) || // "第一" 等简短标题
+                            /^\d+[\s\.\,，、]/.test(line) || // 数字开头后跟空格、点、逗号等
+                            /^[一二三四五六七八九十百千万]+[\s\.\,，、]/.test(line) || // 中文数字开头
+                            /^[^\s\.\,，、]{1,10}$/.test(line) && i > 0 && lines[i-1].trim() === '' && lines[i+1]?.trim() === '' // 独立成段的短文本
+                        )) {
+                            // 计算当前行在原文中的位置
+                            const position = content.indexOf(lines[i], currentPosition);
+                            if (position !== -1) { // 确保找到了
+                                currentPosition = position + lines[i].length;
+
+                                chapterTitles.push({
+                                    title: line,
+                                    position: position
+                                });
+                            }
+                        }
+                    }
+                }
+
+                // 如果章节数量过多（超过100个），可能是误判，尝试更严格的规则
+                if (chapterTitles.length > 100) {
+                    // 清空已找到的章节
+                    chapterTitles = [];
+
+                    // 只保留明确的章节标记
+                    for (let i = 0; i < lines.length; i++) {
+                        const line = lines[i].trim();
+                        if (line && (
+                            /^第[一二三四五六七八九十百千万0-9]+[章节]/.test(line) ||
+                            /^Chapter\s+\d+/.test(line)
+                        )) {
+                            const position = content.indexOf(line);
+                            chapterTitles.push({
+                                title: line,
+                                position: position
+                            });
+                        }
+                    }
+                }
+
+                // 如果仍然没有找到章节，则将整个内容作为一个章节
+                if (chapterTitles.length === 0) {
+                    if (book) {
+                        book.chapters.push({
+                            id: 'chapter_' + Date.now() + '_1',
+                            title: '第1章',
+                            content: content
+                        });
+                    }
+                    createChapter(1, "第1章", content);
+                } else {
+                    // 根据章节标题位置拆分内容
+                    chapterTitles.forEach((chapter, index) => {
+                        const nextChapter = chapterTitles[index + 1];
+                        let chapterContent;
+
+                        if (nextChapter) {
+                            chapterContent = content.substring(chapter.position, nextChapter.position);
+                        } else {
+                            chapterContent = content.substring(chapter.position);
+                        }
+
+                        if (book) {
+                            book.chapters.push({
+                                id: 'chapter_' + Date.now() + '_' + (index + 1),
+                                title: chapter.title,
+                                content: chapterContent
+                            });
+                        }
+                        createChapter(index + 1, chapter.title, chapterContent);
+                    });
+                }
+
+                // 自动选中第一个章节
+                const firstChapter = document.querySelector('.chapter-item');
+                if (firstChapter) {
+                    firstChapter.click();
+                }
+
+                // 更新总章节数
+                updateTotalChaptersCount();
+            }
+
+            // 创建章节
+            function createChapter(number, title, content) {
+                const chaptersContainer = document.getElementById('chapters-container');
+
+                // 创建新章节元素
+                const newChapter = document.createElement('div');
+                newChapter.className = 'chapter-item';
+                newChapter.innerHTML = `
+                    <span class="chapter-item-number">${number}</span>
+                    <span>${title}</span>
+                `;
+
+                // 存储章节内容
+                newChapter.dataset.content = content;
+
+                // 添加点击事件
+                newChapter.addEventListener('click', function() {
+                    const allChapters = document.querySelectorAll('.chapter-item');
+                    allChapters.forEach(ch => ch.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // 更新编辑器
+                    document.querySelector('.chapter-title-input').value = title;
+                    document.querySelector('.editor-textarea').value = this.dataset.content || '';
+
+                    // 更新页码指示器
+                    const totalChapters = document.querySelectorAll('.chapter-item').length;
+                    document.querySelector('.chapter-page-indicator span').textContent = `${number} / ${totalChapters}`;
+                });
+
+                // 添加到容器
+                chaptersContainer.appendChild(newChapter);
+            }
+
+            // 更新总章节数
+            function updateTotalChaptersCount() {
+                const totalChapters = document.querySelectorAll('.chapter-item').length;
+                const activeChapter = document.querySelector('.chapter-item.active');
+
+                if (activeChapter) {
+                    const chapterNumber = activeChapter.querySelector('.chapter-item-number').textContent;
+                    document.querySelector('.chapter-page-indicator span').textContent = `${chapterNumber} / ${totalChapters}`;
+                }
+            }
+
+            // 初始化章节项的点击事件
+            function initChapterItemsEvents() {
+                const chapterItems = document.querySelectorAll('.chapter-item');
+                chapterItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        chapterItems.forEach(i => i.classList.remove('active'));
+                        this.classList.add('active');
+
+                        // 这里可以添加加载章节内容的逻辑
+                        const chapterNumber = this.querySelector('.chapter-item-number').textContent;
+                        const chapterTitle = this.querySelector('span:last-child').textContent;
+                        document.querySelector('.chapter-title-input').value = chapterTitle;
+
+                        // 更新页码指示器
+                        const totalChapters = document.querySelectorAll('.chapter-item').length;
+                        document.querySelector('.chapter-page-indicator span').textContent = `${chapterNumber} / ${totalChapters}`;
+                    });
+                });
+            }
+
+            // 工具栏按钮点击效果
+            const toolbarBtns = document.querySelectorAll('.toolbar-btn');
+            toolbarBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 对于某些按钮，可能需要切换激活状态
+                    if (this.getAttribute('title') === '加粗' ||
+                        this.getAttribute('title') === '斜体' ||
+                        this.getAttribute('title') === '下划线') {
+                        this.classList.toggle('active');
+                    }
+                });
+            });
+
+            // AI功能按钮
+            const aiButtons = document.querySelectorAll('.ai-btn');
+            aiButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const action = this.id;
+                    const textarea = document.querySelector('.editor-textarea');
+                    const selectedText = getSelectedText(textarea);
+
+                    // 根据不同的AI功能执行不同的操作
+                    switch(action) {
+                        case 'ai-write':
+                            alert('AI写作功能将在这里实现');
+                            break;
+                        case 'ai-expand':
+                            if (selectedText) {
+                                alert(`AI将扩写选中的内容: "${selectedText}"`);
+                            } else {
+                                alert('请先选择要扩写的文本');
+                            }
+                            break;
+                        case 'ai-polish':
+                            if (selectedText) {
+                                alert(`AI将润色选中的内容: "${selectedText}"`);
+                            } else {
+                                alert('请先选择要润色的文本');
+                            }
+                            break;
+                        case 'ai-continue':
+                            alert('AI续写功能将在这里实现');
+                            break;
+                    }
+                });
+            });
+
+            // 获取文本框中选中的文本
+            function getSelectedText(textarea) {
+                return textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
+            }
+
+            // 自动保存功能
+            const editorTextarea = document.querySelector('.editor-textarea');
+            const chapterTitleInput = document.querySelector('.chapter-title-input');
+
+            // 定时自动保存
+            setInterval(function() {
+                if (editorTextarea.value) {
+                    updateLastSaveTime();
+                    saveChapterContent();
+                    console.log('内容已自动保存');
+                }
+            }, 30000); // 每30秒自动保存一次
+
+            // 内容变化时更新保存时间
+            editorTextarea.addEventListener('input', function() {
+                // 这里可以添加防抖处理
+                clearTimeout(editorTextarea.saveTimeout);
+                editorTextarea.saveTimeout = setTimeout(function() {
+                    updateLastSaveTime();
+                    saveChapterContent();
+                }, 2000);
+            });
+
+            chapterTitleInput.addEventListener('input', function() {
+                // 更新章节列表中的标题
+                const activeChapter = document.querySelector('.chapter-item.active');
+                if (activeChapter) {
+                    const chapterNumber = activeChapter.querySelector('.chapter-item-number').textContent;
+                    activeChapter.querySelector('span:last-child').textContent = chapterTitleInput.value || `第 ${chapterNumber} 章`;
+                }
+
+                updateLastSaveTime();
+                saveChapterContent();
+            });
+
+            // 保存当前章节内容
+            function saveChapterContent() {
+                const activeChapter = document.querySelector('.chapter-item.active');
+                if (!activeChapter) return;
+
+                // 获取章节内容
+                const content = editorTextarea.value;
+
+                // 存储到章节元素的dataset中
+                activeChapter.dataset.content = content;
+
+                // 保存整本书
+                saveCurrentBook();
+            }
+        // 更新最后保存时间
+        function updateLastSaveTime() {
+            const currentTime = new Date();
+            const formattedTime = `${currentTime.getFullYear()}-${padZero(currentTime.getMonth() + 1)}-${padZero(currentTime.getDate())} ${padZero(currentTime.getHours())}:${padZero(currentTime.getMinutes())}:${padZero(currentTime.getSeconds())}`;
+            document.getElementById('current-time').textContent = `最后保存：${formattedTime}`;
+        }
+
+        // 数字补零
+        function padZero(num) {
+            return num < 10 ? `0${num}` : num;
+        }
+
+        // 添加键盘快捷键
+        function initKeyboardShortcuts() {
+            document.addEventListener('keydown', function(e) {
+                // Ctrl+S 保存
+                if (e.ctrlKey && e.key === 's') {
+                    e.preventDefault();
+                    updateLastSaveTime();
+                    saveCurrentBook();
+                    showToast('内容已保存', 'success');
+                }
+
+                // Ctrl+Z 撤销
+                if (e.ctrlKey && e.key === 'z') {
+                    // 浏览器已有默认行为，这里可以添加自定义逻辑
+                }
+
+                // Ctrl+Y 重做
+                if (e.ctrlKey && e.key === 'y') {
+                    // 浏览器已有默认行为，这里可以添加自定义逻辑
+                }
+            });
+        }
+
+        // 初始化AI功能
+        function initAIFeatures() {
+            // AI写作按钮
+            const aiWriteBtn = document.getElementById('ai-write');
+            if (aiWriteBtn) {
+                aiWriteBtn.addEventListener('click', function() {
+                    showAIFeatureDialog('AI写作', '请选择写作风格和主题：');
+                });
+            }
+
+            // AI扩写按钮
+            const aiExpandBtn = document.getElementById('ai-expand');
+            if (aiExpandBtn) {
+                aiExpandBtn.addEventListener('click', function() {
+                    showAIFeatureDialog('AI扩写', '请选择需要扩写的内容：');
+                });
+            }
+
+            // AI润色按钮
+            const aiPolishBtn = document.getElementById('ai-polish');
+            if (aiPolishBtn) {
+                aiPolishBtn.addEventListener('click', function() {
+                    showAIFeatureDialog('AI润色', '请选择需要润色的内容：');
+                });
+            }
+
+            // AI续写按钮
+            const aiContinueBtn = document.getElementById('ai-continue');
+            if (aiContinueBtn) {
+                aiContinueBtn.addEventListener('click', function() {
+                    showAIFeatureDialog('AI续写', '请选择续写的风格：');
+                });
+            }
+
+            // AI拆书按钮
+            const aiSplitBtn = document.getElementById('ai-split');
+            if (aiSplitBtn) {
+                aiSplitBtn.addEventListener('click', function() {
+                    showAIFeatureDialog('AI拆书', '请选择拆分方式：');
+                });
+            }
+
+            // AI起名按钮
+            const aiNameBtn = document.getElementById('ai-name');
+            if (aiNameBtn) {
+                aiNameBtn.addEventListener('click', function() {
+                    showAIFeatureDialog('AI起名', '请选择起名风格：');
+                });
+            }
+        }
+
+        // 显示AI功能对话框
+        function showAIFeatureDialog(title, message) {
+            showToast(`${title}功能即将推出，敬请期待！`, 'info');
+        }
+
+        // 获取URL参数
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            const results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // 根据写作类型设置页面标题和初始章节标题
+        function setupWritingType() {
+            const writingType = getUrlParameter('type');
+            if (writingType) {
+                // 更新页面标题
+                document.title = `笔尖传奇 - ${writingType}创作`;
+
+                // 更新章节标题输入框的占位符
+                const chapterTitleInput = document.querySelector('.chapter-title-input');
+                if (chapterTitleInput) {
+                    chapterTitleInput.placeholder = `请输入${writingType}标题`;
+                }
+
+                // 可以在这里添加更多与写作类型相关的设置
+                console.log(`已加载${writingType}创作模式`);
+
+                // 显示提示信息
+                showToast(`已进入${writingType}创作模式`, 'info');
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            initSidebar();
+            initThemeSwitcher();
+            initBackButton();
+            initEditor();
+            initKeyboardShortcuts();
+            initAIFeatures();
+            checkLoginStatus();
+            setupWritingType(); // 设置写作类型
+
+            // 添加浮动动画样式
+            const styleSheet = document.createElement('style');
+            styleSheet.textContent = `
+                @keyframes float {
+                    0% { transform: translateY(0); }
+                    50% { transform: translateY(-10px); }
+                    100% { transform: translateY(0); }
+                }
+            `;
+            document.head.appendChild(styleSheet);
+
+            // 初始化时更新一次保存时间
+            updateLastSaveTime();
+        });
+    </script>
+</body>
+</html>

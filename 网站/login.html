@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta content="0" http-equiv="Expires">
+    <meta content="no-cache" http-equiv="Pragma">
+    <meta content="no-cache" http-equiv="Cache-control">
+    <meta content="no-cache" http-equiv="Cache">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover" name="viewport"/>
+    <meta content="AI写作, 写作辅助工具, 笔尖传奇, 智能写作助手, 在线写作工具, 自动生成文章, 创意写作, AI作文助手" name="keywords">
+    <meta content="笔尖传奇为您提供AI智能写作辅助，帮助快速生成文章、获取创意灵感，提升写作效率，是一款功能强大的AI写作助手。" name="description">
+    <link href="images/pen-logo.svg" rel="icon" type="image/svg+xml">
+    <title>笔尖传奇 - 登录</title>
+    
+    <!-- 立即加载关键资源 -->
+    <link rel="preload" href="images/pen-logo.svg" as="image" fetchpriority="high" crossorigin>
+    
+    <!-- 简化版主题脚本 -->
+    <script>
+    (function() {
+        // 立即应用保存的主题
+        var savedTheme = localStorage.getItem('selectedTheme');
+        document.documentElement.setAttribute('data-theme', savedTheme || 'default');
+        
+        // 禁用过渡效果，提高性能
+        document.documentElement.classList.add('no-transitions');
+        
+        // 页面加载后移除禁用类
+        window.addEventListener('DOMContentLoaded', function() {
+            document.documentElement.classList.remove('no-transitions');
+        });
+    })();
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #ffffff;
+        }
+        
+        .no-transitions, .no-transitions * {
+            transition: none !important;
+            animation: none !important;
+        }
+        
+        #app {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            overflow: hidden;
+        }
+        
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(78, 110, 242, 0.2);
+            pointer-events: none;
+        }
+        
+        .login-container {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+        }
+        
+        .login-card {
+            width: 360px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .logo-container {
+            margin-bottom: 20px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .logo {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+        
+        .site-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #333;
+            background: linear-gradient(to right, #4e6ef2, #00b8d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .site-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 25px;
+        }
+        
+        .login-form {
+            width: 100%;
+        }
+        
+        .login-tabs {
+            display: flex;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .login-tab {
+            flex: 1;
+            padding: 10px 0;
+            text-align: center;
+            cursor: pointer;
+            color: #999;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .login-tab.active {
+            color: #4e6ef2;
+            font-weight: 500;
+        }
+        
+        .login-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, #4e6ef2, #00b8d4);
+        }
+        
+        .login-panel {
+            display: none;
+        }
+        
+        .login-panel.active {
+            display: block;
+        }
+        
+        .qrcode-container {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 20px;
+            background: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .qrcode-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .qrcode-loading {
+            text-align: center;
+        }
+        
+        .qrcode-loading p {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .qrcode-tip {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .form-control:focus {
+            border-color: #4e6ef2;
+            box-shadow: 0 0 0 2px rgba(78, 110, 242, 0.2);
+            outline: none;
+        }
+        
+        .login-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+        
+        .form-check {
+            display: flex;
+            align-items: center;
+        }
+        
+        .form-check-input {
+            margin-right: 5px;
+        }
+        
+        .form-check-label {
+            color: #666;
+        }
+        
+        .forgot-password {
+            color: #4e6ef2;
+            text-decoration: none;
+        }
+        
+        .btn-login {
+            width: 100%;
+            padding: 12px 0;
+            background: linear-gradient(to right, #4e6ef2, #00b8d4);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(78, 110, 242, 0.3);
+        }
+        
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(78, 110, 242, 0.4);
+        }
+        
+        .register-text {
+            margin-top: 15px;
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .register-link {
+            color: #4e6ef2;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 480px) {
+            .login-card {
+                width: 90%;
+                max-width: 340px;
+                padding: 25px 20px;
+            }
+            
+            .logo {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .site-title {
+                font-size: 22px;
+            }
+            
+            .qrcode-container {
+                width: 160px;
+                height: 160px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="particles" id="particles"></div>
+        
+        <div class="login-container">
+            <div class="login-card">
+                <div class="logo-container">
+                    <a href="welcome.html" title="返回欢迎页">
+                        <img src="images/pen-logo.svg" alt="笔尖传奇" class="logo">
+                    </a>
+                </div>
+                <h1 class="site-title">笔尖传奇</h1>
+                <p class="site-subtitle">AI智能写作助手，激发创作灵感</p>
+                
+                <div class="login-form">
+                    <div class="login-tabs">
+                        <div class="login-tab active" id="tab-wechat">微信登录</div>
+                        <div class="login-tab" id="tab-account">账号登录</div>
+                    </div>
+                    
+                    <!-- 微信登录 -->
+                    <div id="login-wechat" class="login-panel active">
+                        <div class="qrcode-container">
+                            <div id="qrcode" class="qrcode-placeholder">
+                                <!-- 二维码占位符，后期对接真实二维码 -->
+                                <div class="qrcode-loading">
+                                    <svg width="50" height="50" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="50" cy="50" r="40" stroke="#eee" stroke-width="8" fill="none" />
+                                        <path d="M50 10 a 40 40 0 0 1 40 40" stroke="#4e6ef2" stroke-width="8" fill="none">
+                                            <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="1s" repeatCount="indefinite" />
+                                        </path>
+                                    </svg>
+                                    <p>等待接入微信登录</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="qrcode-tip">请使用微信扫码登录/注册</p>
+                    </div>
+                    
+                    <!-- 账号登录 -->
+                    <div id="login-account" class="login-panel">
+                        <form>
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="用户名/手机号">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" placeholder="密码">
+                            </div>
+                            <div class="login-options">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="rememberMe">
+                                    <label class="form-check-label" for="rememberMe">记住密码</label>
+                                </div>
+                                <a href="#" class="forgot-password">忘记密码?</a>
+                            </div>
+                            <button type="submit" class="btn-login">登 录</button>
+                            <div class="register-text">
+                                还没有账号? <a href="#" class="register-link">立即注册</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 创建粒子背景
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = window.innerWidth < 768 ? 30 : 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // 随机大小
+                const size = Math.random() * 10 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // 随机位置
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                particle.style.left = `${left}%`;
+                particle.style.top = `${top}%`;
+                
+                // 随机透明度
+                const opacity = Math.random() * 0.5 + 0.1;
+                particle.style.opacity = opacity;
+                
+                // 添加动画
+                particle.style.animation = `float ${Math.random() * 10 + 10}s infinite ease-in-out`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            
+            // 登录标签切换
+            const tabs = document.querySelectorAll('.login-tab');
+            const panels = document.querySelectorAll('.login-panel');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // 移除所有活动状态
+                    tabs.forEach(t => t.classList.remove('active'));
+                    panels.forEach(p => p.classList.remove('active'));
+                    
+                    // 添加当前活动状态
+                    this.classList.add('active');
+                    const targetPanel = document.getElementById(this.id.replace('tab-', 'login-'));
+                    if (targetPanel) {
+                        targetPanel.classList.add('active');
+                    }
+                });
+            });
+            
+            // 登录表单提交事件
+            const loginForm = document.querySelector('form');
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // 获取用户名和密码
+                    const username = this.querySelector('input[type="text"]').value;
+                    const password = this.querySelector('input[type="password"]').value;
+                    
+                    // 简单验证 - 确保用户名和密码不为空
+                    if (!username || !password) {
+                        alert('请输入用户名和密码');
+                        return;
+                    }
+                    
+                    // 设置登录状态
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('username', username);
+                    
+                    // 在测试环境中，显示一个提示，允许用户选择是否跳转
+                    if (confirm('登录成功！点击"确定"跳转到仪表板，点击"取消"留在当前页面。')) {
+                        // 保存当前主题到localStorage
+                        const currentTheme = document.documentElement.getAttribute('data-theme');
+                        localStorage.setItem('selectedTheme', currentTheme);
+                        
+                        // 获取重定向URL
+                        const redirectUrl = localStorage.getItem('loginRedirect') || 'dashboard.html';
+                        window.location.href = redirectUrl;
+                    }
+                });
+            }
+        });
+        
+        // 微信二维码接口预留
+        /**
+         * 微信二维码生成接口预留
+         * 后期对接真实微信登录API时，可以在这里实现二维码生成逻辑
+         * 
+         * 示例实现:
+         * function generateWechatQRCode() {
+         *     // 1. 调用后端API获取微信登录二维码URL
+         *     // 2. 使用二维码库生成二维码
+         *     // 3. 监听扫码状态
+         * }
+         */
+    </script>
+</body>
+</html>
