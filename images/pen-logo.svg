@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200px" height="200px" viewBox="0 0 200 200" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>笔尖传奇 Logo</title>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="penGradient">
+            <stop stop-color="#8E354A" offset="0%"></stop>
+            <stop stop-color="#C89B40" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M100,10 L180,60 L180,140 L100,190 L20,140 L20,60 L100,10 Z" stroke="#000000" stroke-width="10" fill="#FFFFFF"></path>
+        <path d="M100,40 L140,65 L140,115 L100,140 L60,115 L60,65 L100,40 Z" fill="#000000"></path>
+        <path d="M100,140 L100,190" stroke="#5DC2A9" stroke-width="10" stroke-linecap="round"></path>
+        <circle cx="100" cy="120" r="10" fill="#5DC2A9"></circle>
+    </g>
+</svg>
